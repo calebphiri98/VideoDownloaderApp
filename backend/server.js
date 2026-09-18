@@ -21,7 +21,7 @@ app.post('/api/info', (req, res) => {
   const { url } = req.body;
   if (!url) return res.status(400).json({ error: 'URL is required' });
 
-  const command = `yt-dlp --dump-json "${url}"`;
+  const command = `yt-dlp --extractor-args "youtube:player_client=android,web" --dump-json "${url}"`;
 
   exec(command, { maxBuffer: 1024 * 1024 * 10 }, (err, stdout, stderr) => {
     if (err) {
@@ -105,7 +105,7 @@ app.get('/api/download', (req, res) => {
   const outputTemplate = path.join(tempDir, `${tempId}.%(ext)s`);
 
   // --concurrent-fragments speeds up downloads of fragmented (DASH/HLS) streams, common on YouTube.
-  const command = `yt-dlp -f "${formatSelector}" --merge-output-format mp4 --concurrent-fragments 8 --no-warnings -o "${outputTemplate}" "${url}"`;
+  const command = `yt-dlp --extractor-args "youtube:player_client=android,web" -f "${formatSelector}" --merge-output-format mp4 --concurrent-fragments 8 --no-warnings -o "${outputTemplate}" "${url}"`;
 
   exec(command, { maxBuffer: 1024 * 1024 * 20 }, (err, stdout, stderr) => {
     if (err) {
